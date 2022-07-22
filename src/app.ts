@@ -16,13 +16,10 @@ connection.connect((err) => {
 app.use("/album", albumRoute);
 
 app.get("/", (req, res) => {
-  connection.query(
-    "INSERT INTO `users` (name) VALUES('Lucky victory')",
-    (err, result) => {
-      if (err) throw err;
-      console.log(result);
-    }
-  );
+  connection.query("SELECT * FROM `users`", (err, result, fields) => {
+    if (err) throw err;
+    console.log(result, fields);
+  });
   res.status(200).send("PHOZY API 1.1");
 });
 app.listen(port, () => {
