@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from "express";
-import { verify as jwtVerify } from "jsonwebtoken";
+import { IRequest, IResponse, INext} from "../interfaces/common";
+import { JsonWebTokenError, JwtPayload, verify as jwtVerify } from "jsonwebtoken";
 const { JWT_SECRET_KEY } = process.env;
 
 /**
@@ -7,20 +7,19 @@ const { JWT_SECRET_KEY } = process.env;
  *
  */
 export const getTokenFromHeader = (
-  req: Request,
-  res: Response,
-  next: NextFunction
+  req: IRequest,
+  res: IResponse,
+  next: INext
 ) => {
   const headerAuth = req.headers && req.headers.authorization;
   const jwtToken = headerAuth ? headerAuth.split("Bearer ")[0] : null;
 
   if (jwtToken) {
     req.jwtToken = jwtToken;
-    next();
-    return;
+    return next();
   }
 
-  res.status(401).json({
+  return res.status(401).json({
     message: "No token provided",
   });
 };
@@ -31,26 +30,29 @@ export const getTokenFromHeader = (
  */
 
 export const validateToken = (
-  req: Request,
-  res: Response,
-  next: NextFunction
+  req: IRequest,
+  res: IResponse,
+  next: INext
 ) => {
   try {
     const { jwtToken } = req;
     let decodedToken;
-    jwtVerify(jwtToken, JWT_SECRET_KEY as string, (err, decoded) => {
+    jwtVerify(jwtToken, JWT_SECRET_KEY as string, (err:JsonWebTokenError, decoded:JwtPayload) => {
       if (err) {
-        res.status(400).json({
+      return   res.status(400).json({
           message: "Invalid token",
         });
-        return;
-      }
+        }
       decodedToken = decoded;
-      req.user = decodedToken;
-      next();
+      const user = {
+        id:decodedToken.id,username:decodedToken.username
+      }
+      req.user = user
+    return   next();
     });
+
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       error,
       message: "couldn't validate token",
     });

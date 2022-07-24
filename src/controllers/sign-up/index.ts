@@ -1,12 +1,13 @@
 import { IUsersRecord, IUsersResult } from "./../../interfaces/users/index";
-import { NextFunction, Request, Response } from "express";
+
 import { Users } from "../../models/users";
 import { generateJwtToken } from "../../helpers";
+import { IResponse,IRequest,INext } from "../../interfaces/common";
 
 export const createNewUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
+req: IRequest,
+res: IResponse,
+  next:INext
 ) => {
   try {
     const newUser: IUsersRecord = {
@@ -18,13 +19,13 @@ export const createNewUser = async (
     };
     const user = (await Users.create(newUser)) as IUsersResult;
     const token = generateJwtToken(user);
-    res.status(201).json({
+   return res.status(201).json({
       user,
       token,
       messsage: "user successfully created ",
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       error,
       message: "an error occured",
     });

@@ -1,7 +1,7 @@
 import { DateType } from "../common";
 
 export interface IUsers {
-  firstname: string;
+  firstname?: string;
   lastname?: string;
   profileImage?: string;
   username?: string;
@@ -13,5 +13,5 @@ export interface IUsersRecord extends IUsers {
 export interface IUsersResult extends IUsers {
   id: number;
   createdAt?: DateType;
-  updatedAt?: DateType | null;
+  updatedAt?: DateType | null; 
 }
