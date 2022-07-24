@@ -1,7 +1,7 @@
 import { IAlbum, IAlbumRecord, IAlbumResult } from "../../interfaces/albums";
 import db from "../../config/db";
 
-export class Albums {
+export default class Albums {
   title!: IAlbum["title"];
   description!: IAlbum["description"];
   userId!: IAlbum["userId"];

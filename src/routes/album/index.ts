@@ -1,4 +1,8 @@
 import { Router } from "express";
+import asyncHandler from "express-async-handler";
+
+import AlbumController from "../../controllers/album";
+import { getTokenFromHeader, validateToken } from "../../middlewares";
 const router = Router();
 
 // router.use();
@@ -6,9 +10,10 @@ const router = Router();
 router.get("/", (req, res) => {
   res.send("album route");
 });
-router.get("/:album_name");
+router.get("/:album_id",asyncHandler(AlbumController.getAlbumById));
 
-router.post("/");
+router.post("/",getTokenFromHeader,validateToken,asyncHandler(AlbumController.createNewAlbum));
 router.put("/");
-router.delete("/:album_name");
+router.delete("/:album_id");
+
 export default router;
