@@ -1,13 +1,13 @@
 import { IUsersRecord, IUsersResult } from "./../../interfaces/users/index";
 
+import { NextFunction, Request, Response } from "../../interfaces/common";
 import { Users } from "../../models/users";
-import { generateJwtToken } from "../../helpers";
-import { IResponse,IRequest,INext } from "../../interfaces/common";
+import { generateJwtToken } from "../../utils";
 
 export const createNewUser = async (
-req: IRequest,
-res: IResponse,
-  next:INext
+req: Request,
+res: Response,
+  next:NextFunction
 ) => {
   try {
     const newUser: IUsersRecord = {

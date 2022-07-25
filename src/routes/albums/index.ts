@@ -1,7 +1,7 @@
 import { Router } from "express";
 import asyncHandler from "express-async-handler";
 
-import AlbumController from "../../controllers/album";
+import AlbumController from "../../controllers/albums";
 import { getTokenFromHeader, validateToken } from "../../middlewares";
 const router = Router();
 

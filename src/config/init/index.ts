@@ -16,19 +16,19 @@ const initDB = () => {
           table.string("lastname", 100).nullable();
           table.string("username", 50).notNullable().unique();
           table
-            .timestamp("createdAt", {
+            .timestamp("created_at", {
               precision: 6,
             })
             .notNullable()
             .defaultTo(db.fn.now(6));
           table
-            .timestamp("updatedAt", {
+            .timestamp("updated_at", {
               precision: 6,
             })
             .nullable();
           table.string("password", 255).notNullable();
           table.string("email", 255).notNullable().unique();
-          table.string("profileImage", 1024).nullable();
+          table.string("profile_image", 1024).nullable();
         });
       }
     })
@@ -46,11 +46,11 @@ const initDB = () => {
             .notNullable();
           table.string("title").notNullable().defaultTo("untitled");
           table.string("description").nullable();
-          table.string("coverImage").nullable();
+      
           table.boolean("private").notNullable().defaultTo(false);
-          table.integer("userId").notNullable();
+          table.integer("user_id").notNullable();
           table
-            .timestamp("createdAt", {
+            .timestamp("created_at", {
               precision: 6,
             })
             .notNullable()
@@ -73,17 +73,17 @@ const initDB = () => {
             .notNullable();
           table.string("url", 1024).notNullable();
           table
-            .timestamp("createdAt", {
+            .timestamp("created_at", {
               precision: 6,
             })
             .notNullable()
             .defaultTo(db.fn.now(6));
           table
-            .timestamp("updatedAt", {
+            .timestamp("updated_at", {
               precision: 6,
             })
             .nullable();
-          table.string("altText", 255).nullable();
+          table.string("alt_text", 255).nullable();
         });
       }
     })

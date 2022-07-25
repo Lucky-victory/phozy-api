@@ -1,14 +1,13 @@
 import { DateType } from "../common";
 
-export interface IAlbum {
-  title: string;
-  description?: string;
+export interface IPhoto {
+  url: string;
   user_id: number;
-  private?: boolean;
+  alt_text?:string
 }
 
 
-export interface IAlbumResult extends IAlbum {
+export interface IPhotoResult extends IPhoto {
   id: number;
   created_at?: DateType;
   updated_at?: DateType | null;
