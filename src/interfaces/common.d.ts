@@ -5,7 +5,7 @@ export type DateType = string | Date;
 declare global{
 
     
-    namespace Express{
+   declare namespace Express{
 
         interface Request{
             user: IUsersResult,
@@ -13,10 +13,7 @@ declare global{
             photo_url: string;
             photos_url:string[]
     }
-    interface Response{
-        
-        
-    }
+
 }
 
 }
