@@ -4,7 +4,7 @@ export interface IUsers {
   firstname?: string;
   lastname?: string;
   profile_image?: string;
-  username?: string;
+  username: string;
 }
 export interface IUsersRecord extends IUsers {
   email: string;

@@ -28,7 +28,7 @@ const initDB = () => {
             .nullable();
           table.string("password", 255).notNullable();
           table.string("email", 255).notNullable().unique();
-          table.string("profile_image", 1024).nullable();
+          table.string("profile_image").nullable();
         });
       }
     })

@@ -16,10 +16,10 @@ export default class Users {
       return error;
     }
   }
-  static async create(new_user: IUsersRecord): Promise<IUsersResult | unknown> {
+  static async create(new_user: IUsersRecord): Promise<number[]| unknown> {
     try {
-      console.log(new_user,'model');
       const result = await db("users").insert<IUsersRecord>(new_user);
+      
       
       return result;
     } catch (error) {
@@ -37,13 +37,12 @@ export default class Users {
 
   static async findByEmail(
     email: string,
-    columns = ["firstname", "profile_image", "id", "username"]
+    columns:string[]=[], merge=true
   ): Promise<IUsersResult | unknown> {
     try {
-      const result = await db<IUsersResult>("users")
-        .column<string[]>(columns)
-        .select()
-        .where("email", "=", email);
+      const initialColumns = ["firstname", "profile_image", "id", "username"];
+      const mergedColumns: string[] = merge ? [...columns,...initialColumns] : columns ;
+      const result = await db<IUsersResult>("users").column<string[]>(mergedColumns).select().where("email", "=", email);
 
       return result[0] as IUsersResult;
     } catch (error) {
@@ -53,13 +52,13 @@ export default class Users {
   }
   static async findByUsername(
     username: string,
-    columns = ["firstname", "profile_image", "id", "username"]
+    columns:string[]=[], merge=true
   ): Promise<IUsersResult | unknown> {
     try {
+      const initialColumns = ["firstname", "profile_image", "id", "username"];
+      const mergedColumns: string[] = merge ? [...columns,...initialColumns] : columns ;
       const result = await db<IUsersResult>("users")
-        .column<string[]>(columns)
-        .select()
-        .where("username", "=", username);
+        .column<string[]>(mergedColumns).select().where("username", "=", username);
 
       return result[0] as IUsersResult;
     } catch (error) {

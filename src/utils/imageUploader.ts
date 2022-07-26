@@ -7,7 +7,7 @@ export default class ImageUploader{
 
     static upload() {
         let photo_url = '';
-        const destination = 'uploads/';
+        const destination ='uploads/';
         const storage = multer.diskStorage({
             destination,
             filename(req, file, callback) {
@@ -17,7 +17,6 @@ export default class ImageUploader{
                 
                 
                 photo_url = `${ req.protocol }://${ req.hostname }/${destination}${ filename }`;
-                console.log(photo_url);
                 
                 req.photo_url = photo_url;
             },
