@@ -11,7 +11,7 @@ import likesRoute from "./routes/Likes";
 import usersRoute from "./routes/Users";
 import { errorHandler } from "./middlewares/Error-handler";
 import cors from "cors";
-
+import createError from "http-errors";
 // global middlewares
 app.use(cors());
 app.use(
@@ -33,7 +33,9 @@ app.use("/api", generalRoute);
 app.get("/", (req, res) => {
   res.status(200).send("PHOZY API 1.0");
 });
-
+app.use((req, res, next) => {
+  next(createError(404));
+});
 app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   errorHandler(err, req, res, next);
 });

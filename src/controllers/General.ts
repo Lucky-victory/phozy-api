@@ -106,14 +106,17 @@ export default class GeneralController {
       photo_id: number;
       total_likes: number;
     }[];
-    // results = results.map((result, index) => {
-    //   if (result.pid == likes[index]?.photo_id) {
-    //     result.total_likes = likes[index]?.total_likes;
-    //   } else {
-    //     result.total_likes = 0;
+
+    // for (const result of results) {
+    //   for (const like of likes) {
+    //     if (result.pid !== like?.photo_id) {
+    //       console.log(like);
+    //       result["total_likes"] = 0;
+    //     } else {
+    //       result["total_likes"] = like?.total_likes;
+    //     }
     //   }
-    //   return result;
-    // });
+    // }
     console.log(likes);
 
     return results as IGeneralResult[];
