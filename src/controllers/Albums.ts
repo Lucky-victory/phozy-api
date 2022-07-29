@@ -178,8 +178,11 @@ albumCache.set('album'+album_id,data);
       };
       // if privacy is not undefined, add it as a property
       privacy ? (albumToUpdate["privacy"] = privacy) : null;
+
+      console.log(albumToUpdate);
       albumToUpdate = transformPrivacyToNumber(albumToUpdate) as IAlbumResult;
-      const album = await AlbumsModel.findById(albumId);
+      console.log(albumToUpdate);
+      const album = await AlbumsModel.findByIdWithAuth(albumId);
       if (!album) {
         res.status(404).json({
           message: `Album with '${album_id}' was not found`,

@@ -67,11 +67,13 @@ export const transformPrivacyToNumber = (
 ): IAlbumResult | IAlbumResult[] | void[] => {
   if (Array.isArray(obj)) {
     return obj.map((val) => {
-      val.privacy === false ? (val.privacy = 0) : (val.privacy = 1);
+      String(val.privacy).toLowerCase() === "false"
+        ? (val.privacy = 0)
+        : (val.privacy = 1);
       return val;
     });
   }
-  obj.privacy === false
+  String(obj?.privacy).toLowerCase() === "false"
     ? ((obj.privacy as unknown as number) = 0)
     : ((obj.privacy as unknown as number) = 1);
   return obj;
