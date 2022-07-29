@@ -87,9 +87,16 @@ export default class AlbumsController {
     try {
       const { album_id } = req.params;
       const { auth } = req;
+      const userId = auth?.user?.id;
       const albumId = parseInt(album_id, 10);
       const { photo_count = 10 } = req.query;
-      let album = await AlbumsModel.findById(albumId);
+      let album;
+      //
+      if (auth?.user) {
+        album = await AlbumsModel.findByIdWithAuth(albumId, userId);
+      } else {
+        album = await AlbumsModel.findById(albumId);
+      }
       if (!album) {
         res.status(404).json({
           message: `Album with '${album_id}' was not found`,
@@ -97,7 +104,8 @@ export default class AlbumsController {
         return;
       }
       const hasAccess = isAuthorized(album, auth?.user);
-      if (!hasAccess) {
+      // if the album is private and the current user isn't the owner of the resource
+      if (album?.privacy && !hasAccess) {
         res.status(401).json({
           message: "Unauthorized, don't have access to this resource",
         });

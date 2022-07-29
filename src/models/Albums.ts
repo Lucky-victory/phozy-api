@@ -44,7 +44,25 @@ export default class Albums {
     try {
       const result = await db<IAlbumResult>("albums")
         .select("*")
-        .where("id", "=", id);
+        .where("id", "=", id)
+        .andWhere("privacy", "=", 0);
+
+      return result[0] as IAlbumResult;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  static async findByIdWithAuth(
+    id: number,
+    user_id: number
+  ): Promise<IAlbumResult | undefined> {
+    try {
+      const result = await db<IAlbumResult>("albums")
+        .select("*")
+        .where("id", "=", id)
+        .andWhere("privacy", "=", 0)
+        .orWhere("privacy", "=", 1);
 
       return result[0] as IAlbumResult;
     } catch (error) {
