@@ -27,12 +27,6 @@ export default class UsersController {
       const emailOrUsername = req.body.email_or_username;
       const { password } = req.body;
 
-      if (!(password && emailOrUsername)) {
-        res.status(400).json({
-          message: "Email or username and Password are required",
-        });
-        return;
-      }
       // check if user exist by username or email
       const [usernameExist, emailExist] = (await Promise.all([
         await UsersModel.findByUsername(emailOrUsername, ["password"]),
@@ -99,13 +93,8 @@ export default class UsersController {
       let { password, username } = req.body;
       const { email, fullname } = req.body;
       username = generateUsername(username);
+console.log(username);
 
-      if (!(email && password && fullname)) {
-        res.status(400).json({
-          message: "Fullname,Email and password are required",
-        });
-        return;
-      }
       // check if user already exist
       const [usernameExist, emailExist] = await Promise.all([
         await UsersModel.findByUsername(username),
@@ -133,6 +122,7 @@ export default class UsersController {
         password,
         profile_image:
         defaultProfileImage};
+console.log(newUser);
 
       const insertId = (await UsersModel.create(newUser)) as number[];
       // get the newly added user with the id

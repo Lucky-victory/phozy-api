@@ -20,9 +20,9 @@ export default class PhotosController {
       const { album_id } = req.params;
       const albumId = parseInt(album_id, 10);
       const { alt_text } = req.body;
-      if (!(parseInt(album_id) && photo_urls?.length)) {
+      if (!( photo_urls?.length)) {
         res.status(400).json({
-          message: "please provide 'album_id' and at least 1 image",
+          message: "please provide at least 1 image",
         });
         return;
       }

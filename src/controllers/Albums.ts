@@ -26,12 +26,6 @@ export default class AlbumsController {
     try {
       const { auth } = req;
       const { title, privacy, description } = req.body;
-      if (!title || title.trim() === "") {
-        res.status(400).json({
-          message: "title is required",
-        });
-        return;
-      }
 
       let album: IAlbum = {
         title,

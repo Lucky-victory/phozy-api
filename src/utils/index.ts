@@ -120,3 +120,13 @@ export const nestObjectProps = (
   newObj[options.nestedTitle] = nestedObj;
   return newObj;
 };
+
+/**
+ * Checks if a value is an empty string or undefined
+ * @param val 
+ * @returns 
+ */
+export const isEmpty = (val:unknown):boolean => {
+  if (String(val).trim() === '' || typeof val === 'undefined') return true;
+  return false;
+}
