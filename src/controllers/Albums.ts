@@ -1,3 +1,5 @@
+import { IPhotoResult } from './../interfaces/Photos';
+import { IUserResult } from './../interfaces/Users';
 import {
   isAuthorized,
   transformPrivacyToBoolean,
@@ -64,22 +66,22 @@ export default class AlbumsController {
       const offset =
         (parseInt(page as string, 10) - 1) * parseInt(perPage as string, 10);
       let albums;
-      const cachedData = albumCache.get('albums');
+      const cachedData = albumCache.get<IAlbumResult[]>("albums");
       if (cachedData) {
-        albums = cachedData as IAlbumResult[];
- res.status(200).json({
-        message: "albums recieved from cache",
-        data: albums,
-        result_count: albums?.length,
-      });
+        albums = cachedData;
+        res.status(200).json({
+          message: "albums recieved from cache",
+          data: albums,
+          result_count: albums?.length,
+        });
 
-        return
+        return;
       }
       albums = await AlbumsModel.find([], perPage as number, offset);
       albums = transformPrivacyToBoolean(
         albums as IAlbumResult[]
       ) as IAlbumResult[];
-      albumCache.set('albums',albums);
+      albumCache.set("albums", albums);
       res.status(200).json({
         message: "albums retrieved",
         data: albums,
@@ -105,22 +107,19 @@ export default class AlbumsController {
       const albumId = parseInt(album_id, 10);
       const { photo_count = 10 } = req.query;
       let album;
-      const cachedData = albumCache.get('album'+album_id);
+      const cachedData = albumCache.get<IAlbumResult>("album" + album_id);
       if (cachedData) {
-        
- res.status(200).json({
-        message: "album recieved from cache",
-        data: cachedData
-      });
+        res.status(200).json({
+          message: "album recieved from cache",
+          data: cachedData,
+        });
 
-        return
+        return;
       }
       if (auth?.user) {
         album = await AlbumsModel.findByIdWithAuth(albumId);
-        
       } else {
         album = await AlbumsModel.findById(albumId);
-
       }
       if (!album) {
         res.status(404).json({
@@ -138,20 +137,22 @@ export default class AlbumsController {
       }
       album = transformPrivacyToBoolean(album) as IAlbumResult;
       // get the user that owns the albums
-      const user = await UsersModel.findById(album.user_id);
+      const user = await UsersModel.findById(album.user_id) as IUserResult;
       // get photos under the albums
       const photos = await PhotosModel.findByAlbumId(
         [albumId],
         [],
         photo_count as number
-      );
+      ) as IPhotoResult;
       const data = {
-  ...album,user,photos
-}
-albumCache.set('album'+album_id,data);
+        ...album,
+        user,
+        photos,
+      };
+      albumCache.set("album" + album_id, data);
       res.status(201).json({
         message: "album retrieved",
-        data
+        data,
       });
     } catch (error) {
       res.status(500).json({

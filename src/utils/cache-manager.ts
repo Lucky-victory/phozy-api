@@ -5,11 +5,11 @@ export default class CacheManager {
   constructor() {
     this.cache = new NodeCache();
   }
-  get(key: string) {
+  get<T>(key: string) {
 
-    return this.cache.get(key);
+    return this.cache.get<T>(key);
   }
-  set(key: string, value: unknown, ttl: number = 600) {
-    return this.cache.set(key, value, ttl);
+  set<T>(key: string, value: T, ttl: number = 600) {
+    return this.cache.set<T>(key, value, ttl);
   }
 }
