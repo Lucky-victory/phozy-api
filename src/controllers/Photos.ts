@@ -19,14 +19,14 @@ export default class PhotosController {
       const { album_id } = req.params;
       const albumId = parseInt(album_id, 10);
       const { alt_text } = req.body;
-      if (!album_id) {
+      if (!(parseInt(album_id) && photo_urls?.length)) {
         res.status(400).json({
-          message: "album_id is required",
+          message: "please provide 'album_id' and at least 1 image",
         });
         return;
       }
       // check if an album with the specified id exist
-      const albumExist = await AlbumsModel.findById(albumId);
+      const albumExist = await AlbumsModel.findByIdWithAuth(albumId);
       if (!albumExist) {
         res.status(404).json({
           message: `album with id '${album_id}' does not exist`,

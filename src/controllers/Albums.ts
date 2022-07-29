@@ -23,27 +23,31 @@ export default class AlbumsController {
   static async createNewAlbum(req: Request, res: Response): Promise<void> {
     try {
       const { auth } = req;
-      const { title } = req.body;
+      const { title, privacy, description } = req.body;
       if (!title || title.trim() === "") {
         res.status(400).json({
           message: "title is required",
         });
         return;
       }
-      let { privacy } = req.body;
-      privacy = privacy === true ? 1 : 0;
-      const album: IAlbum = {
+
+      let album: IAlbum = {
         title,
-        description: req.body?.description,
+        description,
         privacy,
-        user_id: auth.user.id,
+        user_id: auth?.user?.id,
       };
-
-      await AlbumsModel.create(album);
-
+      album = transformPrivacyToNumber(album) as IAlbum;
+      // get the insert id
+      const insertId = (await AlbumsModel.create(album)) as number[];
+      // query with the insert id
+      let insertedAlbum = (await AlbumsModel.findByIdWithAuth(
+        insertId[0]
+      )) as IAlbumResult;
+      insertedAlbum = transformPrivacyToBoolean(insertedAlbum) as IAlbumResult;
       res.status(201).json({
         message: "album successfully created",
-        album,
+        data: insertedAlbum,
       });
     } catch (error) {
       res.status(500).json({
@@ -63,12 +67,14 @@ export default class AlbumsController {
       const { page = 1, perPage = 10 } = req.query;
       const offset =
         (parseInt(page as string, 10) - 1) * parseInt(perPage as string, 10);
-      const result = await AlbumsModel.find([], perPage as number, offset);
-
+      let albums = await AlbumsModel.find([], perPage as number, offset);
+      albums = transformPrivacyToBoolean(
+        albums as IAlbumResult[]
+      ) as IAlbumResult[];
       res.status(200).json({
         message: "albums retrieved",
-        data: result,
-        result_count: result?.length,
+        data: albums,
+        result_count: albums?.length,
       });
     } catch (error) {
       res.status(500).json({
@@ -87,13 +93,12 @@ export default class AlbumsController {
     try {
       const { album_id } = req.params;
       const { auth } = req;
-      const userId = auth?.user?.id;
       const albumId = parseInt(album_id, 10);
       const { photo_count = 10 } = req.query;
       let album;
       //
       if (auth?.user) {
-        album = await AlbumsModel.findByIdWithAuth(albumId, userId);
+        album = await AlbumsModel.findByIdWithAuth(albumId);
       } else {
         album = await AlbumsModel.findById(albumId);
       }
@@ -151,8 +156,9 @@ export default class AlbumsController {
         user_id: userId,
         title,
         description,
-        privacy,
       };
+      // if privacy is not undefined, add it as a property
+      privacy ? (albumToUpdate["privacy"] = privacy) : null;
       albumToUpdate = transformPrivacyToNumber(albumToUpdate) as IAlbumResult;
       const album = await AlbumsModel.findById(albumId);
       if (!album) {

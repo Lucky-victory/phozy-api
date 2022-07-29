@@ -7,6 +7,6 @@ const router = Router();
 
 router.use(checkIfAuthenticated);
 router.get("/:username", asyncHandler(UsersController.getUserByUsername));
-router.post("/:username/albums", asyncHandler(UsersController.getAlbumsByUser));
+router.get("/:username/albums", asyncHandler(UsersController.getAlbumsByUser));
 
 export default router;

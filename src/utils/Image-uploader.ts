@@ -13,7 +13,6 @@ export default class ImageUploader {
         const filename = `${file.fieldname}-${uniqueSuffix}${path.extname(
           file.originalname
         )}`;
-        callback(null, filename);
         photo_url = generateURL(
           req.protocol,
           req.headers?.host as string,
@@ -22,6 +21,7 @@ export default class ImageUploader {
         );
 
         req.photo_url = photo_url;
+        callback(null, filename);
       },
     });
 
@@ -29,8 +29,8 @@ export default class ImageUploader {
   }
 
   static uploadMany() {
-    const photo_urls: string[] = [];
     const destination = "uploads/";
+    const photo_urls: string[] = [];
     const storage = multer.diskStorage({
       destination,
       filename(req, file, callback) {
@@ -38,8 +38,6 @@ export default class ImageUploader {
         const filename = `${file.fieldname}-${uniqueSuffix}${path.extname(
           file.originalname
         )}`;
-
-        callback(null, filename);
 
         const photo_url = generateURL(
           req.protocol,
@@ -50,6 +48,7 @@ export default class ImageUploader {
         photo_urls.push(photo_url);
 
         req.photo_urls = photo_urls;
+        callback(null, filename);
       },
     });
 

@@ -47,7 +47,8 @@ export const transformPrivacyToBoolean = (
 ): IAlbumResult | IAlbumResult[] | void[] => {
   if (Array.isArray(obj)) {
     return obj.map((val) => {
-      val.privacy === 0 ? false : true;
+      val.privacy === 0 ? (val.privacy = false) : (val.privacy = true);
+      return val;
     });
   }
   obj?.privacy === 0
@@ -66,7 +67,8 @@ export const transformPrivacyToNumber = (
 ): IAlbumResult | IAlbumResult[] | void[] => {
   if (Array.isArray(obj)) {
     return obj.map((val) => {
-      val.privacy === false ? 0 : 1;
+      val.privacy === false ? (val.privacy = 0) : (val.privacy = 1);
+      return val;
     });
   }
   obj.privacy === false

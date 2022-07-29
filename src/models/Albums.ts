@@ -43,7 +43,8 @@ export default class Albums {
   static async findById(id: number): Promise<IAlbumResult | undefined> {
     try {
       const result = await db<IAlbumResult>("albums")
-        .select("*")
+        .select<string[]>("id", "title")
+        .column(["id", "title"])
         .where("id", "=", id)
         .andWhere("privacy", "=", 0);
 
@@ -53,10 +54,7 @@ export default class Albums {
     }
   }
 
-  static async findByIdWithAuth(
-    id: number,
-    user_id: number
-  ): Promise<IAlbumResult | undefined> {
+  static async findByIdWithAuth(id: number): Promise<IAlbumResult | undefined> {
     try {
       const result = await db<IAlbumResult>("albums")
         .select("*")
@@ -77,10 +75,11 @@ export default class Albums {
     try {
       const result = await db<IAlbumResult>("albums")
         .column<string[]>(columns)
-        .select()
         .where("privacy", "=", 0)
         .limit(limit as number)
         .offset(offset as number);
+      console.log(result);
+
       return result;
     } catch (error) {
       console.log(error);
