@@ -6,8 +6,8 @@
     "dev": "nodemon src/app.ts",
     "db:init": "npm run build && node dist/config/Init.js",
     "start": "node dist/app.js",
-    "prestart": "npm run build",
-    "build": "npx tsc -p .",
+    "postinstall": "npm run build",
+    "build": "tsc",
     "lint": "eslint ./src/**/** --fix"
   },
   "repository": {
