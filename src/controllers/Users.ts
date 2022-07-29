@@ -125,15 +125,14 @@ export default class UsersController {
         return;
       }
       password = await hashPassword(String(password), 10);
-      const profile_image = req.photo_url || defaultProfileImage;
-
+      
       const newUser: IUserRecord = {
         email,
         fullname,
         username,
         password,
-        profile_image,
-      };
+        profile_image:
+        defaultProfileImage};
 
       const insertId = (await UsersModel.create(newUser)) as number[];
       // get the newly added user with the id

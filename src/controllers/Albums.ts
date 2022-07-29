@@ -10,6 +10,8 @@ import AlbumsModel from "../models/Albums";
 import UsersModel from "../models/Users";
 import PhotosModel from "../models/Photos";
 import db from "../config/db";
+import CacheManager from "../utils/cache-manager";
+const albumCache = new CacheManager();
 
 export default class AlbumsController {
   /**
@@ -67,10 +69,23 @@ export default class AlbumsController {
       const { page = 1, perPage = 10 } = req.query;
       const offset =
         (parseInt(page as string, 10) - 1) * parseInt(perPage as string, 10);
-      let albums = await AlbumsModel.find([], perPage as number, offset);
+      let albums;
+      const cachedData = albumCache.get('albums');
+      if (cachedData) {
+        albums = cachedData as IAlbumResult[];
+ res.status(200).json({
+        message: "albums recieved from cache",
+        data: albums,
+        result_count: albums?.length,
+      });
+
+        return
+      }
+      albums = await AlbumsModel.find([], perPage as number, offset);
       albums = transformPrivacyToBoolean(
         albums as IAlbumResult[]
       ) as IAlbumResult[];
+      albumCache.set('albums',albums);
       res.status(200).json({
         message: "albums retrieved",
         data: albums,
@@ -96,11 +111,22 @@ export default class AlbumsController {
       const albumId = parseInt(album_id, 10);
       const { photo_count = 10 } = req.query;
       let album;
-      //
+      const cachedData = albumCache.get('album'+album_id);
+      if (cachedData) {
+        
+ res.status(200).json({
+        message: "album recieved from cache",
+        data: cachedData
+      });
+
+        return
+      }
       if (auth?.user) {
         album = await AlbumsModel.findByIdWithAuth(albumId);
+        
       } else {
         album = await AlbumsModel.findById(albumId);
+
       }
       if (!album) {
         res.status(404).json({
@@ -125,14 +151,13 @@ export default class AlbumsController {
         [],
         photo_count as number
       );
-
+      const data = {
+  ...album,user,photos
+}
+albumCache.set('album'+album_id,data);
       res.status(201).json({
         message: "album retrieved",
-        data: {
-          ...album,
-          user,
-          photos,
-        },
+        data
       });
     } catch (error) {
       res.status(500).json({

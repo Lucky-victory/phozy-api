@@ -6,9 +6,10 @@ export default class CacheManager {
     this.cache = new NodeCache();
   }
   get(key: string) {
-    this.cache.get(key);
+
+    return this.cache.get(key);
   }
-  set(key: string, value: unknown, ttl: number = 10000) {
-    this.cache.set(key, value, ttl);
+  set(key: string, value: unknown, ttl: number = 600) {
+    return this.cache.set(key, value, ttl);
   }
 }

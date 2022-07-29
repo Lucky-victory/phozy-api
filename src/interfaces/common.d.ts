@@ -5,6 +5,7 @@ export interface Config {
   database_url: string;
   jwt_secret_key: string;
   jwt_expiration?: string;
+  cloudinary_url:string
 }
 
 declare global {

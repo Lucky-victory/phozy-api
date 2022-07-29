@@ -6,6 +6,7 @@ import { IPhoto, IPhotoResult } from "./../interfaces/Photos";
 import AlbumsModel from "../models/Albums";
 
 export default class PhotosController {
+  
   /**
    * @desc adds new photos to an album
    * @route POST /api/photos/:album_id

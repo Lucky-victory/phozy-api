@@ -7,11 +7,16 @@ export const errorHandler: ErrorRequestHandler = (err, req, res) => {
       message: "Invalid token",
     });
   }
+  let error = err || {};
+  (req.app.get("env") === "production" ? null :
+    { ...error, stack: err?.stack })
+
   const errorObj = {
-    status: err.status || 500,
-    message: err.message,
-    error:
-      req.app.get("env") === "production" ? null : { err, stack: err.stack },
-  };
-  res.json(errorObj);
+    status: err?.status || 500,
+    message: err?.message,
+error    
+  }
+  
+  
+  res.status(err?.status|| 500).json(errorObj);
 };

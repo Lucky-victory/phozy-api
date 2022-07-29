@@ -3,6 +3,8 @@ import { Response, Request } from "express";
 import db from "../config/db";
 import { nestObjectProps } from "../utils";
 import LikesModel from "../models/Likes";
+import CacheManager from '../utils/cache-manager';
+const generalCache = new CacheManager();
 
 export default class GeneralController {
   /**
@@ -15,15 +17,32 @@ export default class GeneralController {
     try {
       const { auth } = req;
 
-      let results;
+
+      let results!:IGeneralResult[];
+      const cachedData = generalCache.get('general');
+  
+      if (cachedData as unknown) {
+        results = cachedData as unknown as IGeneralResult[];
+        res.status(200).json({
+        message: "data recieved from cache",
+        data: results,
+        result_count: results?.length,
+      });
+        return
+      }
       if (auth && auth.user) {
         results = await GeneralController._findWithAuth(req);
+        generalCache.set('general', results);
       }
-      results = await GeneralController._findWithoutAuth(req);
+      else {
+        
+        results = await GeneralController._findWithoutAuth(req) ;
+        generalCache.set('general', results);
+      }
       res.status(200).json({
         message: "data retrieved",
         data: results,
-        result_count: results.length,
+        result_count: results?.length,
       });
     } catch (error) {
       res.status(500).json({
@@ -90,7 +109,7 @@ export default class GeneralController {
         "photos.album_id",
       ])
       .where("albums.privacy", "=", 0)
-      .andWhere("users.id", "=", auth?.user?.id)
+      .orWhere("albums.user_id", "=", auth?.user?.id)
       .limit(perPageLimit)
       .offset(offset);
 
@@ -102,10 +121,10 @@ export default class GeneralController {
     });
     // get photo ids to query likes table
     const photoIds = results.map((result) => result.pid);
-    const likes = (await LikesModel.findTotalByPhotoId(photoIds)) as {
-      photo_id: number;
-      total_likes: number;
-    }[];
+    //const likes = (await LikesModel.findTotalByPhotoId(photoIds)) as{
+      //photo_id: number;
+      //total_likes: number;
+   // }[];
 
     // for (const result of results) {
     //   for (const like of likes) {
@@ -117,7 +136,7 @@ export default class GeneralController {
     //     }
     //   }
     // }
-    console.log(likes);
+    //console.log(likes);
 
     return results as IGeneralResult[];
   }
