@@ -15,9 +15,9 @@ export default class GeneralController {
   static async find(req: Request, res: Response) {
     try {
       const { auth } = req;
-
+const {page=1}=req.query;
       let results!: IGeneralResult[];
-      const cachedData = generalCache.get<IGeneralResult[]>("general");
+      const cachedData = generalCache.get<IGeneralResult[]>("general"+page);
 
       if (cachedData) {
         results = cachedData as IGeneralResult[];
@@ -30,10 +30,10 @@ export default class GeneralController {
       }
       if (auth && auth.user) {
         results = await GeneralController._findWithAuth(req);
-        generalCache.set("general", results);
+        generalCache.set("general"+page, results);
       } else {
         results = await GeneralController._findWithoutAuth(req);
-        generalCache.set("general", results);
+        generalCache.set("general"+page, results);
       }
       res.status(200).json({
         message: "data retrieved",
