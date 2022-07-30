@@ -11,7 +11,7 @@ export default class ImageUploader {
     
     return multer({ storage: multer.diskStorage({}), fileFilter: fileFilter });
   }
-  static async toCloud(req: Request, res: Response, next: NextFunction) {
+  static async profileImageUpload(req: Request, res: Response, next: NextFunction) {
     const { auth } = req;
     const result = await cloudinary.uploader.upload(req.file?.path as string, {
       public_id: `profile_image_${auth?.user?.id}`,
@@ -22,11 +22,18 @@ export default class ImageUploader {
     req.photo_url = result.secure_url;
     next()
   }
-  static uploadMany() {
-    
-
-    return multer({ storage:multer.diskStorage({}),fileFilter:fileFilter});
+  static async albumImageUpload(req: Request, res: Response, next: NextFunction) {
+    const photo_urls:string[] = [];
+    const result = await cloudinary.uploader.upload(req.file?.path as string, {
+      public_id: `album_image_${uuidV4()}`,
+      
+      width:1000,height:1000,crop:'fill',gravity:'faces'
+    });
+    photo_urls.push(result.secure_url);
+    req.photo_urls = photo_urls;
+    next()
   }
+
 }
   export const fileFilter=(req:Request,file:Express.Multer.File,cb:FileFilterCallback)=>{
     if (file.mimetype.startsWith('image')) {

@@ -11,7 +11,7 @@ router.get("/:username", asyncHandler(UsersController.getUserByUsername));
 router.get("/:username/albums", asyncHandler(UsersController.getAlbumsByUser));
 
 // @todo add update controller 
-router.post('/update-profile/profile-image',ImageUploader.upload().single("profile_image"),asyncHandler(ImageUploader.toCloud),)
+router.post('/update-profile/profile-image',ImageUploader.upload().single("profile_image"),asyncHandler(ImageUploader.profileImageUpload),)
 
 
 export default router;

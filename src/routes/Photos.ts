@@ -8,7 +8,7 @@ import asyncHandler from "express-async-handler";
 router.use(checkIfAuthenticated);
 router.post(
   "/:album_id",
-  ImageUploader.uploadMany().array("album_images", 10),
+  ImageUploader.upload().array("album_images", 10),asyncHandler(ImageUploader.albumImageUpload),
   asyncHandler(PhotosController.createNewPhotos)
 );
 router.delete("/:photo_id", asyncHandler(PhotosController.deleteItem));
