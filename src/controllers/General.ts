@@ -15,9 +15,9 @@ export default class GeneralController {
   static async find(req: Request, res: Response) {
     try {
       const { auth } = req;
-const {page=1}=req.query;
+      const { page = 1 } = req.query;
       let results!: IGeneralResult[];
-      const cachedData = generalCache.get<IGeneralResult[]>("general"+page);
+      const cachedData = generalCache.get<IGeneralResult[]>("general" + page);
 
       if (cachedData) {
         results = cachedData as IGeneralResult[];
@@ -30,10 +30,10 @@ const {page=1}=req.query;
       }
       if (auth && auth.user) {
         results = await GeneralController._findWithAuth(req);
-        generalCache.set("general"+page, results);
+        generalCache.set("general" + page, results);
       } else {
         results = await GeneralController._findWithoutAuth(req);
-        generalCache.set("general"+page, results);
+        generalCache.set("general" + page, results);
       }
       res.status(200).json({
         message: "data retrieved",
@@ -67,6 +67,7 @@ const {page=1}=req.query;
         "users.id as uid",
         "users.username",
         "users.fullname",
+        "users.profile_image",
         "photos.url",
         "photos.album_id",
       ])
@@ -77,7 +78,7 @@ const {page=1}=req.query;
     results = results.map((result) => {
       return nestObjectProps(result, {
         nestedTitle: "user",
-        props: ["username", "uid", "fullname"],
+        props: ["username", "uid", "fullname", "profile_image"],
       });
     });
 
