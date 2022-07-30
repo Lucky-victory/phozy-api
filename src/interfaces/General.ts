@@ -3,7 +3,7 @@ export interface IGeneralResult {
   pid: number;
   album_id: number;
   url: string;
-  liked?:boolean;
+  liked?: boolean;
 }
 
 export interface IGeneralUser {

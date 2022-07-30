@@ -5,13 +5,7 @@ import { checkIfAuthenticated } from "../middlewares/Auth";
 const router = Router();
 
 router.use(checkIfAuthenticated);
-router.post(
-  "/like/:photo_id",
-  asyncHandler(LikesController.addLike)
-);
-router.post(
-  "/unlike/:like_id",
-  asyncHandler(LikesController.removeLike)
-);
+router.post("/like/:photo_id", asyncHandler(LikesController.addLike));
+router.post("/unlike/:like_id", asyncHandler(LikesController.removeLike));
 
 export default router;

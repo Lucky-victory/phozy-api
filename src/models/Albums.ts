@@ -76,7 +76,6 @@ export default class Albums {
         .where("privacy", "=", 0)
         .limit(limit as number)
         .offset(offset as number);
-    
 
       return result;
     } catch (error) {

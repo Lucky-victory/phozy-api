@@ -5,7 +5,7 @@ export interface Config {
   database_url: string;
   jwt_secret_key: string;
   jwt_expiration?: string;
-  cloudinary_url:string
+  cloudinary_url: string;
 }
 
 declare global {
@@ -15,7 +15,7 @@ declare global {
       jwtToken: string;
       photo_url: string;
       photo_urls: string[];
-album:IAlbumResult
+      album: IAlbumResult;
     }
   }
 }

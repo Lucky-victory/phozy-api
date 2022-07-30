@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { check, ValidationError, validationResult } from "express-validator";
-import path from 'path';
+import path from "path";
 
 export default class Validators {
   static validateSignUp() {

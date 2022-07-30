@@ -93,7 +93,7 @@ export default class UsersController {
       let { password, username } = req.body;
       const { email, fullname } = req.body;
       username = generateUsername(username);
-console.log(username);
+      console.log(username);
 
       // check if user already exist
       const [usernameExist, emailExist] = await Promise.all([
@@ -114,15 +114,15 @@ console.log(username);
         return;
       }
       password = await hashPassword(String(password), 10);
-      
+
       const newUser: IUserRecord = {
         email,
         fullname,
         username,
         password,
-        profile_image:
-        defaultProfileImage};
-console.log(newUser);
+        profile_image: defaultProfileImage,
+      };
+      console.log(newUser);
 
       const insertId = (await UsersModel.create(newUser)) as number[];
       // get the newly added user with the id

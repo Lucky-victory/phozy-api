@@ -4,7 +4,7 @@ export interface IPhoto {
   url: string;
   user_id: number;
   alt_text?: string;
-  album_id:number
+  album_id: number;
 }
 
 export interface IPhotoResult extends IPhoto {

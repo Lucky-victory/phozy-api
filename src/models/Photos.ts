@@ -49,15 +49,15 @@ export default class Photos {
 
   static async deletePhoto(
     id: number,
-    user_id:number
+    user_id: number
   ): Promise<number | unknown> {
     try {
-   
       const result = await db<IPhotoResult>("photos")
-     .del()
-        .where("id", "=", id).andWhere('user_id','=',user_id);
+        .del()
+        .where("id", "=", id)
+        .andWhere("user_id", "=", user_id);
 
-      return result
+      return result;
     } catch (error) {
       console.log(error);
     }

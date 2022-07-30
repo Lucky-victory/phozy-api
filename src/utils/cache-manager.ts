@@ -6,7 +6,6 @@ export default class CacheManager {
     this.cache = new NodeCache();
   }
   get<T>(key: string) {
-
     return this.cache.get<T>(key);
   }
   set<T>(key: string, value: T, ttl: number = 600) {
