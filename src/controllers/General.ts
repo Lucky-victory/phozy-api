@@ -101,6 +101,7 @@ export default class GeneralController {
         "users.id as uid",
         "users.username",
         "users.fullname",
+        "users.profile_image",
         "photos.url",
         "photos.album_id",
       ])
@@ -112,7 +113,7 @@ export default class GeneralController {
     results = results.map((result) => {
       return nestObjectProps(result, {
         nestedTitle: "user",
-        props: ["username", "uid", "fullname"],
+        props: ["username", "uid", "fullname", "profile_image"],
       });
     });
 
