@@ -1,11 +1,12 @@
 import { isAuthorized } from "./../utils/index";
 
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import PhotosModel from "../models/Photos";
 import { IPhoto, IPhotoResult } from "./../interfaces/Photos";
 import AlbumsModel from "../models/Albums";
 
 export default class PhotosController {
+  
   /**
    * @desc adds new photos to an album
    * @route POST /api/photos/:album_id
@@ -15,36 +16,15 @@ export default class PhotosController {
    */
   static async createNewPhotos(req: Request, res: Response) {
     try {
-      const { photo_urls, auth } = req;
-      const { album_id } = req.params;
-      const albumId = parseInt(album_id, 10);
+      const { photo_urls, auth,album } = req;
+    
       const { alt_text } = req.body;
-      if (!album_id) {
-        res.status(400).json({
-          message: "album_id is required",
-        });
-        return;
-      }
-      // check if an album with the specified id exist
-      const albumExist = await AlbumsModel.findById(albumId);
-      if (!albumExist) {
-        res.status(404).json({
-          message: `album with id '${album_id}' does not exist`,
-        });
-        return;
-      }
-      const hasAccess = isAuthorized(albumExist, auth.user);
-      if (!hasAccess) {
-        res.status(401).json({
-          message: "Unauthorized, don't have access to this resource",
-        });
-        return;
-      }
+      
       const newPhotos: IPhoto[] = photo_urls.map((photo_url) => {
         return {
           url: photo_url,
           alt_text,
-          album_id: albumId,
+          album_id: album.id as number,
           user_id: auth?.user?.id,
         };
       });
@@ -93,4 +73,36 @@ export default class PhotosController {
       });
     }
   }
+  
+  /**
+   check if an album with the specified id exist
+   * 
+   * @param req 
+   * @param res 
+   * @param next 
+   * @returns 
+   */
+  static async checkIfAlbumExist(req:Request,res:Response,next:NextFunction) {
+     const { album_id } = req.params;
+    const { auth } = req;
+      const albumId = parseInt(album_id, 10);
+    const albumExist=await AlbumsModel.findByIdWithAuth(albumId);
+      if (!albumExist) {
+        res.status(404).json({
+          message: `album with id '${album_id}' does not exist`,
+        });
+        return;
+      }
+      
+      const hasAccess = isAuthorized(albumExist, auth.user);
+      if (!hasAccess) {
+        res.status(401).json({
+          message: "Unauthorized, don't have access to this resource",
+        });
+        return;
+      }
+      req.album = albumExist;
+      next()
+    }
+  
 }

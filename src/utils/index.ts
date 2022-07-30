@@ -47,7 +47,8 @@ export const transformPrivacyToBoolean = (
 ): IAlbumResult | IAlbumResult[] | void[] => {
   if (Array.isArray(obj)) {
     return obj.map((val) => {
-      val.privacy === 0 ? false : true;
+      val.privacy === 0 ? (val.privacy = false) : (val.privacy = true);
+      return val;
     });
   }
   obj?.privacy === 0
@@ -66,10 +67,13 @@ export const transformPrivacyToNumber = (
 ): IAlbumResult | IAlbumResult[] | void[] => {
   if (Array.isArray(obj)) {
     return obj.map((val) => {
-      val.privacy === false ? 0 : 1;
+      String(val.privacy).toLowerCase() === "false"
+        ? (val.privacy = 0)
+        : (val.privacy = 1);
+      return val;
     });
   }
-  obj.privacy === false
+  String(obj?.privacy).toLowerCase() === "false"
     ? ((obj.privacy as unknown as number) = 0)
     : ((obj.privacy as unknown as number) = 1);
   return obj;
@@ -118,3 +122,13 @@ export const nestObjectProps = (
   newObj[options.nestedTitle] = nestedObj;
   return newObj;
 };
+
+/**
+ * Checks if a value is an empty string or undefined
+ * @param val 
+ * @returns 
+ */
+export const isEmpty = (val:unknown):boolean => {
+  if (String(val).trim() === '' || typeof val === 'undefined') return true;
+  return false;
+}

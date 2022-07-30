@@ -2,11 +2,10 @@ import { Router } from "express";
 import UsersController from "../controllers/Users";
 const router = Router();
 import asyncHandler from "express-async-handler";
-import ImageUploader from "../utils/Image-uploader";
+import Validators from "../middlewares/validators";
 
 router.post(
-  "/",
-  ImageUploader.upload().single("profile_image"),
+  "/",Validators.validateSignUp(),Validators.validationResult,
   asyncHandler(UsersController.createNewUser)
 );
 
