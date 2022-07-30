@@ -58,9 +58,7 @@ export default class Albums {
     try {
       const result = await db<IAlbumResult>("albums")
         .select("*")
-        .where("id", "=", id)
-        .andWhere("privacy", "=", 0)
-        .orWhere("privacy", "=", 1);
+        .where("id", "=", id);
 
       return result[0] as IAlbumResult;
     } catch (error) {
@@ -78,7 +76,7 @@ export default class Albums {
         .where("privacy", "=", 0)
         .limit(limit as number)
         .offset(offset as number);
-      console.log(result);
+    
 
       return result;
     } catch (error) {

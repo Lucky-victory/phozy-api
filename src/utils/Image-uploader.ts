@@ -1,10 +1,9 @@
 
 import { v4 as uuidV4 } from "uuid";
-import path from "path";
 import {v2 as cloudinary} from 'cloudinary';
 import { NextFunction, Request, Response } from "express";
 import multer,{ FileFilterCallback} from "multer";
-import { log } from "console";
+
 
 export default class ImageUploader {
   static upload() {
@@ -18,18 +17,28 @@ export default class ImageUploader {
       radius: 'max',
       width:500,height:500,crop:'fill',gravity:'faces'
     });
-    log(result)
+  
     req.photo_url = result.secure_url;
     next()
   }
   static async albumImageUpload(req: Request, res: Response, next: NextFunction) {
-    const photo_urls:string[] = [];
-    const result = await cloudinary.uploader.upload(req.file?.path as string, {
-      public_id: `album_image_${uuidV4()}`,
+    const photo_urls: string[] = [];
+    if (!(req.files)?.length) {
+      res.status(400).json({
+        message:'No files were found'
+      })
+      return
+    }
+    for (const file of (req.files as Express.Multer.File[])) {
+    
       
-      width:1000,height:1000,crop:'fill',gravity:'faces'
-    });
-    photo_urls.push(result.secure_url);
+      const result = await cloudinary.uploader.upload(file.path, {
+        public_id: `album_image_${uuidV4()}`,
+        
+        width:1000,height:1000,crop:'fill',gravity:'faces'
+      });
+      photo_urls.push(result.secure_url);
+    }
     req.photo_urls = photo_urls;
     next()
   }
@@ -43,13 +52,3 @@ export default class ImageUploader {
       
  }
 }
-
-
-export const generateURL = (
-  protocol: string,
-  hostname: string,
-  folder: string,
-  filename: string
-): string => {
-  return `${protocol}://${hostname}/${folder}${filename}`;
-};

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { check, ValidationError, validationResult } from "express-validator";
+import path from 'path';
 
 export default class Validators {
   static validateSignUp() {
@@ -61,12 +62,7 @@ export default class Validators {
         .withMessage("email / username and password is required!"),
     ];
   }
-  static validatePhotoAdd() {
-    return [
 
-      check('albums_images').not().isEmpty().withMessage('albums_images is required with at least 1 iamge')
-    ]
-  }
   static validateAlbumAdd() {
     return [
       check("title")

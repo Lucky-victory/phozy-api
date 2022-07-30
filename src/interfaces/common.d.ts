@@ -1,5 +1,5 @@
 import { IUserResult } from "./Users";
-
+import { IAlbumResult } from "./Albums";
 export type DateType = string | Date;
 export interface Config {
   database_url: string;
@@ -15,6 +15,7 @@ declare global {
       jwtToken: string;
       photo_url: string;
       photo_urls: string[];
+album:IAlbumResult
     }
   }
 }
