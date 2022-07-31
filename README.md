@@ -35,3 +35,7 @@ Album's route `/api/profile`
 Photos's route `/api/photos`
 
 Likes route `/api/likes`
+
+
+## Ref
+This project was built for Planetscale X Hashnode hackathon
