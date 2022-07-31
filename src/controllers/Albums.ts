@@ -1,5 +1,5 @@
-import { IPhotoResult } from './../interfaces/Photos';
-import { IUserResult } from './../interfaces/Users';
+import { IPhotoResult } from "./../interfaces/Photos";
+import { IUserResult } from "./../interfaces/Users";
 import {
   isAuthorized,
   transformPrivacyToBoolean,
@@ -137,13 +137,13 @@ export default class AlbumsController {
       }
       album = transformPrivacyToBoolean(album) as IAlbumResult;
       // get the user that owns the albums
-      const user = await UsersModel.findById(album.user_id) as IUserResult;
+      const user = (await UsersModel.findById(album.user_id)) as IUserResult;
       // get photos under the albums
-      const photos = await PhotosModel.findByAlbumId(
+      const photos = (await PhotosModel.findByAlbumId(
         [albumId],
         [],
         photo_count as number
-      ) as IPhotoResult;
+      )) as IPhotoResult;
       const data = {
         ...album,
         user,

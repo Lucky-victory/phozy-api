@@ -5,7 +5,9 @@ import asyncHandler from "express-async-handler";
 import Validators from "../middlewares/validators";
 
 router.post(
-  "/",Validators.validateSignUp(),Validators.validationResult,
+  "/",
+  Validators.validateSignUp(),
+  Validators.validationResult,
   asyncHandler(UsersController.createNewUser)
 );
 

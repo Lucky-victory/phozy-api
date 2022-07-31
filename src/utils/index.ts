@@ -125,10 +125,10 @@ export const nestObjectProps = (
 
 /**
  * Checks if a value is an empty string or undefined
- * @param val 
- * @returns 
+ * @param val
+ * @returns
  */
-export const isEmpty = (val:unknown):boolean => {
-  if (String(val).trim() === '' || typeof val === 'undefined') return true;
+export const isEmpty = (val: unknown): boolean => {
+  if (String(val).trim() === "" || typeof val === "undefined") return true;
   return false;
-}
+};

@@ -69,9 +69,9 @@ export default class GeneralController {
         "users.fullname",
         "users.profile_image",
         "photos.url",
-        "photos.album_id",
+        "photos.album_id","photos.created_at"
       ])
-      .where("albums.privacy", "=", 0)
+      .where("albums.privacy", "=", 0).orderBy('photos.created_at',"desc")
       .limit(perPageLimit)
       .offset(offset);
 
@@ -104,9 +104,9 @@ export default class GeneralController {
         "users.fullname",
         "users.profile_image",
         "photos.url",
-        "photos.album_id",
+        "photos.album_id","photos.created_at"
       ])
-      .where("albums.privacy", "=", 0)
+      .where("albums.privacy", "=", 0).orderBy('photos.created_at',"desc")
       .orWhere("albums.user_id", "=", auth?.user?.id)
       .limit(perPageLimit)
       .offset(offset);

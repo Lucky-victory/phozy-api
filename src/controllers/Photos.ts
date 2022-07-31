@@ -6,7 +6,6 @@ import { IPhoto, IPhotoResult } from "./../interfaces/Photos";
 import AlbumsModel from "../models/Albums";
 
 export default class PhotosController {
-  
   /**
    * @desc adds new photos to an album
    * @route POST /api/photos/:album_id
@@ -16,10 +15,10 @@ export default class PhotosController {
    */
   static async createNewPhotos(req: Request, res: Response) {
     try {
-      const { photo_urls, auth,album } = req;
-    
+      const { photo_urls, auth, album } = req;
+
       const { alt_text } = req.body;
-      
+
       const newPhotos: IPhoto[] = photo_urls.map((photo_url) => {
         return {
           url: photo_url,
@@ -73,7 +72,7 @@ export default class PhotosController {
       });
     }
   }
-  
+
   /**
    check if an album with the specified id exist
    * 
@@ -82,27 +81,30 @@ export default class PhotosController {
    * @param next 
    * @returns 
    */
-  static async checkIfAlbumExist(req:Request,res:Response,next:NextFunction) {
-     const { album_id } = req.params;
+  static async checkIfAlbumExist(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    const { album_id } = req.params;
     const { auth } = req;
-      const albumId = parseInt(album_id, 10);
-    const albumExist=await AlbumsModel.findByIdWithAuth(albumId);
-      if (!albumExist) {
-        res.status(404).json({
-          message: `album with id '${album_id}' does not exist`,
-        });
-        return;
-      }
-      
-      const hasAccess = isAuthorized(albumExist, auth.user);
-      if (!hasAccess) {
-        res.status(401).json({
-          message: "Unauthorized, don't have access to this resource",
-        });
-        return;
-      }
-      req.album = albumExist;
-      next()
+    const albumId = parseInt(album_id, 10);
+    const albumExist = await AlbumsModel.findByIdWithAuth(albumId);
+    if (!albumExist) {
+      res.status(404).json({
+        message: `album with id '${album_id}' does not exist`,
+      });
+      return;
     }
-  
+
+    const hasAccess = isAuthorized(albumExist, auth.user);
+    if (!hasAccess) {
+      res.status(401).json({
+        message: "Unauthorized, don't have access to this resource",
+      });
+      return;
+    }
+    req.album = albumExist;
+    next();
+  }
 }

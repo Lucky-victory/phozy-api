@@ -9,11 +9,13 @@ import {
 } from "../utils";
 import { IUserRecord, IUserResult } from "../interfaces/Users";
 
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { hash as hashPassword, compare as comparePassword } from "bcrypt";
 import UsersModel from "../models/Users";
 import ms from "ms";
 import AlbumsModel from "../models/Albums";
+import CacheManager from "../utils/cache-manager";
+const userCache = new CacheManager();
 
 export default class UsersController {
   /**
@@ -93,8 +95,7 @@ export default class UsersController {
       let { password, username } = req.body;
       const { email, fullname } = req.body;
       username = generateUsername(username);
-console.log(username);
-
+    
       // check if user already exist
       const [usernameExist, emailExist] = await Promise.all([
         await UsersModel.findByUsername(username),
@@ -114,16 +115,15 @@ console.log(username);
         return;
       }
       password = await hashPassword(String(password), 10);
-      
+
       const newUser: IUserRecord = {
         email,
         fullname,
         username,
         password,
-        profile_image:
-        defaultProfileImage};
-console.log(newUser);
-
+        profile_image: defaultProfileImage,
+      };
+      
       const insertId = (await UsersModel.create(newUser)) as number[];
       // get the newly added user with the id
       const result = (await UsersModel.findById(insertId[0])) as IUserResult;
@@ -189,15 +189,36 @@ console.log(newUser);
         });
         return;
       }
+      const cachedData = userCache.get('user');
+      if (cachedData) {
+        res.status(200).json({
+        message: "user info recieved from cache",
+        data: cachedData,
+      });
+        return 
+      }
       // check if the authenticated user is the same requesting the resource by comparing the user ID
       if (user.id === auth?.user?.id) {
+        const cachedData = userCache.get('user'+auth?.user?.id);
+      if (cachedData) {
+        res.status(200).json({
+        message: "user info recieved from cache",
+        data: cachedData,
+      });
+        return 
+      }
         // if the current user, get both public and private albums
         albums = await AlbumsModel.findByUserIdWithAuth([], auth?.user?.id);
+      albums = transformPrivacyToBoolean(albums as IAlbumResult[]);
+
+        userCache.set('user' + auth?.user?.id, albums);
       } else {
         // otherwise get only public albums
         albums = await AlbumsModel.findByUserId([], auth?.user?.id);
-      }
       albums = transformPrivacyToBoolean(albums as IAlbumResult[]);
+       
+        userCache.set('user', albums)
+      }
       res.status(200).json({
         message: "user info retrieved",
         data: albums,
@@ -208,5 +229,32 @@ console.log(newUser);
         error,
       });
     }
+  }
+  static async updateProfileImage(req: Request, res: Response) {
+    const { photo_url, user } = req;
+    const userId = user.id;
+    try {
+      await UsersModel.update({
+        profile_image: photo_url
+      },userId); 
+    }
+    catch (error) {
+      res.status(500).json({
+        message:'an error occured, couldn\'t update profile image'
+      })
+    }
+  }
+  static async checkIfUserExist(req: Request, res: Response, next: NextFunction) {
+    const { auth } = req;
+    const userId = auth?.user?.id;
+    const user = (await UsersModel.findById(userId)) as IUserResult;
+    if (!user) {
+      res.status(404).json({
+        message: "user does not exist",
+      });
+      return;
+    }
+    req.user = user;
+    next()
   }
 }

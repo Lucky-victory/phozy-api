@@ -68,7 +68,7 @@ export default class Likes {
   ): Promise<ILikesResult[] | unknown> {
     try {
       const result = await db<ILikesResult>("likes")
-        .select('photo_id')
+        .select("photo_id")
         .count("id as total_likes")
         .whereIn("photo_id", photo_ids)
         .groupBy("photo_id");

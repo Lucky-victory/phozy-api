@@ -1,5 +1,5 @@
 import db from "../config/db";
-import { IUserRecord, IUserResult } from "../interfaces/Users";
+import { IUserProfile, IUserRecord, IUserResult } from "../interfaces/Users";
 
 export default class Users {
   static async findById(
@@ -14,7 +14,7 @@ export default class Users {
 
       return result[0] as IUserResult;
     } catch (error) {
-      console.log(error);
+      
       return error;
     }
   }
@@ -27,9 +27,9 @@ export default class Users {
       return error;
     }
   }
-  static async update(user: IUserRecord): Promise<IUserResult | unknown> {
+  static async update(user: IUserRecord|IUserProfile,user_id:number): Promise<IUserResult | unknown> {
     try {
-      const result = await db.update<IUserRecord>(user);
+      const result = await db.update<IUserRecord>(user).where('id','=',user_id);
       return result;
     } catch (error) {
       return error;
@@ -53,7 +53,7 @@ export default class Users {
 
       return result[0] as IUserResult;
     } catch (error) {
-      console.log(error);
+    
       return error;
     }
   }
@@ -74,7 +74,7 @@ export default class Users {
 
       return result[0] as IUserResult;
     } catch (error) {
-      console.log(error);
+      
       return error;
     }
   }

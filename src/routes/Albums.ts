@@ -9,11 +9,17 @@ import Validators from "../middlewares/validators";
 const router = Router();
 
 router.get("/", checkIfAuthenticatedOptional, AlbumsController.getAlbums);
-router.get("/:album_id",checkIfAuthenticatedOptional, asyncHandler(AlbumsController.getAlbumById));
+router.get(
+  "/:album_id",
+  checkIfAuthenticatedOptional,
+  asyncHandler(AlbumsController.getAlbumById)
+);
 
 router.post(
   "/",
-  checkIfAuthenticated,Validators.validateAlbumAdd(),Validators.validationResult,
+  checkIfAuthenticated,
+  Validators.validateAlbumAdd(),
+  Validators.validationResult,
   asyncHandler(AlbumsController.createNewAlbum)
 );
 router
