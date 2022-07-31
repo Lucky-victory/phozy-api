@@ -24,13 +24,13 @@ export default class Likes {
     }
   }
   static async deleteItem(
-    id: number,
+    photo_id: number,
     user_id: number
   ): Promise<number[] | unknown> {
     try {
       const result = await db<ILikesResult>("likes")
         .del()
-        .where("id", "=", id)
+        .where("photo_id", "=", photo_id)
         .andWhere("user_id", "=", user_id);
       return result;
     } catch (error) {

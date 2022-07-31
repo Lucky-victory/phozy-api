@@ -7,7 +7,7 @@ export default class Albums {
       const result = await db<IAlbumResult>("albums").insert(newAlbum);
       return result as number[];
     } catch (error) {
-      console.log(error);
+  
     }
   }
   static async updateAlbum(
@@ -23,6 +23,7 @@ export default class Albums {
       return result;
     } catch (error) {
       console.log(error);
+      
     }
   }
   static async deleteAlbum(
@@ -43,8 +44,8 @@ export default class Albums {
   static async findById(id: number): Promise<IAlbumResult | undefined> {
     try {
       const result = await db<IAlbumResult>("albums")
-        .select<string[]>("id", "title")
-        .column(["id", "title"])
+      .column<string[]>(["id", "title"])
+      .select("id", "title")
         .where("id", "=", id)
         .andWhere("privacy", "=", 0);
 
@@ -66,9 +67,9 @@ export default class Albums {
     }
   }
   static async find(
-    columns = ["id", "title", "description", "created_at"],
-    limit?: number,
-    offset?: number
+    columns = ["id", "title", "description", "created_at","privacy"],
+    limit: number=10,
+    offset: number=0
   ): Promise<IAlbumResult[] | undefined> {
     try {
       const result = await db<IAlbumResult>("albums")
@@ -83,14 +84,18 @@ export default class Albums {
     }
   }
   static async findByUserId(
-    columns = ["id", "title", "description", "created_at"],
+    columns:string[] = [],
     user_id: number,
-    limit?: number,
-    offset?: number
+    limit: number=10,
+    offset: number=0,merge=true
   ): Promise<IAlbumResult[] | undefined> {
     try {
+      const initialColumns =["id", "title", "description", "created_at","privacy"];
+      const mergedColumns: string[] = merge
+        ? [...columns, ...initialColumns]
+        : columns;
       const result = await db<IAlbumResult>("albums")
-        .column<string[]>(columns)
+        .column<string[]>(mergedColumns)
         .select()
         .where("user_id", "=", user_id)
         .andWhere("privacy", "=", 0)
@@ -102,14 +107,18 @@ export default class Albums {
     }
   }
   static async findByUserIdWithAuth(
-    columns = ["id", "title", "description", "created_at"],
+ columns:string[] = [],
     user_id: number,
-    limit?: number,
-    offset?: number
+    limit: number=10,
+    offset: number=0,merge=true
   ): Promise<IAlbumResult[] | undefined> {
     try {
+      const initialColumns =["id", "title", "description", "created_at","privacy"];
+      const mergedColumns: string[] = merge
+        ? [...columns, ...initialColumns]
+        : columns;
       const result = await db<IAlbumResult>("albums")
-        .column<string[]>(columns)
+        .column<string[]>(mergedColumns)
         .select()
         .where("user_id", "=", user_id)
         .limit(limit as number)

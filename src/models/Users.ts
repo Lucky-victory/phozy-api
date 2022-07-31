@@ -80,7 +80,7 @@ export default class Users {
   }
   static async find(
     columns: string[] = [],
-    limit?: number,
+    limit: number=-1,
     merge = true
   ): Promise<IUserResult | unknown> {
     try {

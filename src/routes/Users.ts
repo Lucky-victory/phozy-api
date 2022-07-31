@@ -3,16 +3,16 @@ import asyncHandler from "express-async-handler";
 import ImageUploader from "../utils/Image-uploader";
 
 import UsersController from "../controllers/Users";
-import { checkIfAuthenticated } from "../middlewares/Auth";
+import { checkIfAuthenticated, checkIfAuthenticatedOptional } from "../middlewares/Auth";
 const router = Router();
 
-router.use(checkIfAuthenticated);
-router.get("/:username", asyncHandler(UsersController.getUserByUsername));
-router.get("/:username/albums", asyncHandler(UsersController.getAlbumsByUser));
+router.get("/:username",checkIfAuthenticatedOptional, asyncHandler(UsersController.getUserByUsername));
+
+router.get("/:username/albums",checkIfAuthenticatedOptional, asyncHandler(UsersController.getAlbumsByUser));
 
 // route to update profile image only
 router.post(
-  "/update/profile-image",asyncHandler(UsersController.checkIfUserExist),
+  "/update/profile-image",checkIfAuthenticated, asyncHandler(UsersController.checkIfUserExist),
   ImageUploader.upload().single("profile_image"),
   asyncHandler(ImageUploader.profileImageUpload),asyncHandler(UsersController.updateProfileImage)
 );
