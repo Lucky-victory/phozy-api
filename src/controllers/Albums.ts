@@ -66,22 +66,12 @@ export default class AlbumsController {
       const offset =
         (parseInt(page as string, 10) - 1) * parseInt(perPage as string, 10);
       let albums;
-      const cachedData = albumCache.get<IAlbumResult[]>("albums");
-      if (cachedData) {
-        albums = cachedData;
-        res.status(200).json({
-          message: "albums recieved from cache",
-          data: albums,
-          result_count: albums?.length,
-        });
-
-        return;
-      }
+      
       albums = await AlbumsModel.find([], perPage as number, offset);
       albums = transformPrivacyToBoolean(
         albums as IAlbumResult[]
       ) as IAlbumResult[];
-      albumCache.set("albums", albums);
+    
       res.status(200).json({
         message: "albums retrieved",
         data: albums,
