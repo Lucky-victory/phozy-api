@@ -16,6 +16,7 @@ declare global {
       photo_url: string;
       photo_urls: string[];
       album: IAlbumResult;
+      user: IUserResult;
     }
   }
 }

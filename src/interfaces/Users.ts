@@ -5,6 +5,9 @@ export interface IUser {
   profile_image?: string;
   username: string;
 }
+export interface IUserProfile{
+  profile_image?: string;
+}
 export interface IUserRecord extends IUser {
   email: string;
   password: string;
