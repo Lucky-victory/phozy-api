@@ -6,7 +6,6 @@ const router = Router();
 
 router.get(
   "/",
-  checkIfAuthenticatedOptional,
   asyncHandler(GeneralController.find)
 );
 

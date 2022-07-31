@@ -54,21 +54,21 @@ export default class LikesController {
   }
   /**
    *  @desc Unlike a photo
-   * @route POST /api/likes/unlike/:like_id
+   * @route POST /api/likes/unlike/:photo_id
    * @param req
    * @param res
    * @returns
    */
   static async removeLike(req: Request, res: Response) {
     try {
-      const { like_id } = req.params;
+      const { photo_id } = req.params;
       const { auth } = req;
       const userId = auth?.user?.id;
-      const likeId = parseInt(like_id, 10);
-      const result = (await LikesModel.findById(likeId)) as ILikesResult;
+      const photoId = parseInt(photo_id, 10);
+      const result = (await PhotosModel.findById(photoId)) as ILikesResult;
       if (!result) {
         res.status(404).json({
-          message: `like with '${likeId}' was not found`,
+          message: `photo with '${photoId}' was not found`,
         });
         return;
       }
@@ -79,7 +79,7 @@ export default class LikesController {
         });
         return;
       }
-      await LikesModel.deleteItem(likeId, userId);
+      await LikesModel.deleteItem(photoId, userId);
 
       res.status(200).json({
         message: "Photo unliked",

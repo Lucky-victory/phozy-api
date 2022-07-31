@@ -47,11 +47,11 @@ export const transformPrivacyToBoolean = (
 ): IAlbumResult | IAlbumResult[] | void[] => {
   if (Array.isArray(obj)) {
     return obj.map((val) => {
-      val.privacy === 0 ? (val.privacy = false) : (val.privacy = true);
+      String(val?.privacy) === "0" ? (val.privacy = false) : (val.privacy = true);
       return val;
     });
   }
-  obj?.privacy === 0
+  String(obj?.privacy) === "0"
     ? ((obj.privacy as unknown as boolean) = false)
     : ((obj.privacy as unknown as boolean) = true);
   return obj;

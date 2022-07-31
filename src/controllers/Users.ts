@@ -193,12 +193,14 @@ return
       if (user.id===auth?.user?.id){
         // if the current user, get both public and private albums
         albums = await AlbumsModel.findByUserIdWithAuth([], auth?.user?.id);
-      albums = transformPrivacyToBoolean(albums as IAlbumResult[]);
-
+        
+        albums = transformPrivacyToBoolean(albums as IAlbumResult[]);
+        
         
       } else {
         // otherwise get only public albums
-        albums = await AlbumsModel.findByUserId([], auth?.user?.id);
+        albums = await AlbumsModel.findByUserId([], user?.id);
+        
       albums = transformPrivacyToBoolean(albums as IAlbumResult[]);
        
         
