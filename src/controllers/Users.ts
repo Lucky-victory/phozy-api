@@ -186,38 +186,22 @@ export default class UsersController {
       if (!user) {
         res.status(404).json({
           message: "user does not exist",
-        });
-        return;
-      }
-      const cachedData = userCache.get('user');
-      if (cachedData) {
-        res.status(200).json({
-        message: "user info recieved from cache",
-        data: cachedData,
-      });
-        return 
+        })
+return
       }
       // check if the authenticated user is the same requesting the resource by comparing the user ID
-      if (user.id === auth?.user?.id) {
-        const cachedData = userCache.get('user'+auth?.user?.id);
-      if (cachedData) {
-        res.status(200).json({
-        message: "user info recieved from cache",
-        data: cachedData,
-      });
-        return 
-      }
+      if (user.id===auth?.user?.id){
         // if the current user, get both public and private albums
         albums = await AlbumsModel.findByUserIdWithAuth([], auth?.user?.id);
       albums = transformPrivacyToBoolean(albums as IAlbumResult[]);
 
-        userCache.set('user' + auth?.user?.id, albums);
+        
       } else {
         // otherwise get only public albums
         albums = await AlbumsModel.findByUserId([], auth?.user?.id);
       albums = transformPrivacyToBoolean(albums as IAlbumResult[]);
        
-        userCache.set('user', albums)
+        
       }
       res.status(200).json({
         message: "user info retrieved",
