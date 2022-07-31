@@ -37,7 +37,7 @@ export default class UsersController {
 
       if (!(usernameExist || emailExist)) {
         res.status(404).json({
-          message: "user does not exist",
+               message: "Invalid credentials",
         });
         return;
       }
