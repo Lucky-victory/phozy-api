@@ -1,6 +1,11 @@
-import db from "./db";
+import { albumModel } from "../models/Albums";
+import { photosModel } from "../models/Photos";
+import { connectDB } from "./db";
 
-const initDB = () => {
+connectDB();
+const initDB =async () => {
+await albumModel.init()
+await photosModel.init();
   // create users table if it doesn't exist yet
   db.schema
     .hasTable("users")

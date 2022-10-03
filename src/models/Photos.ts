@@ -1,5 +1,21 @@
 import { IPhoto, IPhotoResult } from "./../interfaces/Photos";
-import db from "../config/db";
+import { harpee, HType } from "harpee";
+import { MyUtils } from "my-node-ts-utils";
+const { Model, Schema } = harpee;
+
+const photosSchema = new Schema({
+  name: "phozy",
+  fields: {
+    user_id: HType.string().required(),
+    url: HType.string().required(),
+    caption: HType.string(),
+    created_at: HType.date().default(MyUtils.currentTime),
+    updated_at: HType.ref("created_at"),
+    likes: HType.number().default(0),
+    views: HType.number().default(0),
+  },
+});
+export const photosModel = new Model("photos", photosSchema);
 
 export default class Photos {
   static async create(

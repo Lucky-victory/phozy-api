@@ -1,27 +1,28 @@
 import db from "../config/db";
 import { IAlbum, IAlbumResult } from "../interfaces/Albums";
-import { harpee, HType } from 'harpee';
-const { Model,Schema} = harpee;
+import { harpee, HType } from "harpee";
+const { Model, Schema } = harpee;
 import { MyUtils } from "my-node-ts-utils";
 
-
 const albumsSchema = new Schema({
-  name: 'albumsSchema', fields: {
+  name: "phozy",
+  fields: {
+    user_id: HType.string().required(),
     title: HType.string().required(),
     description: HType.string(),
     is_public: HType.bool().default(true),
     created_at: HType.date().default(MyUtils.currentTime),
-    updated_at:HType.date().default()
-  }
-})
+    updated_at: HType.ref("created_at"),
+  },
+});
+
+export const albumModel = new Model("albums", albumsSchema);
 export default class Albums {
   static async create(newAlbum: IAlbum): Promise<number[] | undefined> {
     try {
       const result = await db<IAlbumResult>("albums").insert(newAlbum);
       return result as number[];
-    } catch (error) {
-  
-    }
+    } catch (error) {}
   }
   static async updateAlbum(
     album: IAlbumResult,
@@ -36,7 +37,6 @@ export default class Albums {
       return result;
     } catch (error) {
       console.log(error);
-      
     }
   }
   static async deleteAlbum(
@@ -57,8 +57,8 @@ export default class Albums {
   static async findById(id: number): Promise<IAlbumResult | undefined> {
     try {
       const result = await db<IAlbumResult>("albums")
-      .column<string[]>(["id", "title"])
-      .select("id", "title")
+        .column<string[]>(["id", "title"])
+        .select("id", "title")
         .where("id", "=", id)
         .andWhere("privacy", "=", 0);
 
@@ -80,9 +80,9 @@ export default class Albums {
     }
   }
   static async find(
-    columns = ["id", "title", "description", "created_at","privacy"],
-    limit: number=10,
-    offset: number=0
+    columns = ["id", "title", "description", "created_at", "privacy"],
+    limit: number = 10,
+    offset: number = 0
   ): Promise<IAlbumResult[] | undefined> {
     try {
       const result = await db<IAlbumResult>("albums")
@@ -97,13 +97,20 @@ export default class Albums {
     }
   }
   static async findByUserId(
-    columns:string[] = [],
+    columns: string[] = [],
     user_id: number,
-    limit: number=10,
-    offset: number=0,merge=true
+    limit: number = 10,
+    offset: number = 0,
+    merge = true
   ): Promise<IAlbumResult[] | undefined> {
     try {
-      const initialColumns =["id", "title", "description", "created_at","privacy"];
+      const initialColumns = [
+        "id",
+        "title",
+        "description",
+        "created_at",
+        "privacy",
+      ];
       const mergedColumns: string[] = merge
         ? [...columns, ...initialColumns]
         : columns;
@@ -120,13 +127,20 @@ export default class Albums {
     }
   }
   static async findByUserIdWithAuth(
- columns:string[] = [],
+    columns: string[] = [],
     user_id: number,
-    limit: number=10,
-    offset: number=0,merge=true
+    limit: number = 10,
+    offset: number = 0,
+    merge = true
   ): Promise<IAlbumResult[] | undefined> {
     try {
-      const initialColumns =["id", "title", "description", "created_at","privacy"];
+      const initialColumns = [
+        "id",
+        "title",
+        "description",
+        "created_at",
+        "privacy",
+      ];
       const mergedColumns: string[] = merge
         ? [...columns, ...initialColumns]
         : columns;

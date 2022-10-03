@@ -4,9 +4,8 @@
   "description": "A simple image API for organising images in albums",
   "scripts": {
     "dev": "nodemon src/app.ts",
-    "db:init": "npm run build && node dist/config/Init.js",
+    "db:init": "npm run build && node dist/config/init.js",
     "start": "node dist/app.js",
-    "postinstall": "npm run build",
     "build": "tsc",
     "lint": "eslint ./src/**/** --fix"
   },
@@ -37,12 +36,10 @@
     "harpee": "^4.0.4",
     "http-errors": "^2.0.0",
     "jsonwebtoken": "^8.5.1",
-    "knex": "^2.2.0",
     "morgan": "^1.10.0",
     "ms": "^2.1.3",
     "multer": "^1.4.5-lts.1",
     "my-node-ts-utils": "^1.0.1",
-    "mysql": "^2.18.1",
     "node-cache": "^5.1.2",
     "random-words": "^1.2.0",
     "slugify": "^1.6.5",
