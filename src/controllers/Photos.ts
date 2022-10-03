@@ -1,7 +1,7 @@
 import { isAuthorized } from "./../utils/index";
 
 import { NextFunction, Request, Response } from "express";
-import PhotosModel from "../models/Photos";
+import { photosModel } from "../models/Photos";
 import { IPhoto, IPhotoResult } from "./../interfaces/Photos";
 import AlbumsModel from "../models/Albums";
 
@@ -28,7 +28,7 @@ export default class PhotosController {
         };
       });
 
-      await PhotosModel.create(newPhotos);
+      await photosModel.create(newPhotos);
 
       res.status(201).json({
         data: newPhotos,
@@ -53,7 +53,7 @@ export default class PhotosController {
       const { auth } = req;
       const { photo_id } = req.params;
       const photoId = parseInt(photo_id, 10);
-      const photo = (await PhotosModel.findById(photoId)) as IPhotoResult;
+      const photo = await photosModel.findById([photoId])
       if (!photo) {
         res.status(404).json();
         return;
