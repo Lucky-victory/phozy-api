@@ -1,6 +1,19 @@
 import db from "../config/db";
 import { IAlbum, IAlbumResult } from "../interfaces/Albums";
+import { harpee, HType } from 'harpee';
+const { Model,Schema} = harpee;
+import { MyUtils } from "my-node-ts-utils";
 
+
+const albumsSchema = new Schema({
+  name: 'albumsSchema', fields: {
+    title: HType.string().required(),
+    description: HType.string(),
+    is_public: HType.bool().default(true),
+    created_at: HType.date().default(MyUtils.currentTime),
+    updated_at:HType.date().default()
+  }
+})
 export default class Albums {
   static async create(newAlbum: IAlbum): Promise<number[] | undefined> {
     try {

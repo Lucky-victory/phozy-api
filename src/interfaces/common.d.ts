@@ -2,7 +2,7 @@ import { IUserResult } from "./Users";
 import { IAlbumResult } from "./Albums";
 export type DateType = string | Date;
 export interface Config {
-  database_url: string;
+  db_host: string;,db_pass:string,db_user:string,
   jwt_secret_key: string;
   jwt_expiration?: string;
   cloudinary_url: string;
